@@ -1,0 +1,6 @@
+*.log
+.DS_Store
+.vscode/
+log
+node_modules/
+bower_components/

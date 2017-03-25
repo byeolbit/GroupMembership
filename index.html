@@ -1,0 +1,52 @@
+<!doctype html>  
+<html lang="en">  
+    <head>
+        <style>
+            .group {margin: 1px 1px 1px 1px ; max-width: 400px; min-height: auto; border:1px solid black;}
+            .agent {margin: 1px 1px 1px 1px ; width:10px; height:10px; background-color:green; display:inline-block;}
+        </style>
+    </head>
+    <body>
+        <h1>Live Group:offline</h1>
+        <div id="board"></div>
+        <script src="https://code.jquery.com/jquery-1.10.2.js"></script>
+        <script src="/socket.io/socket.io.js"></script>
+        <script>  
+            var socket = io.connect('http://localhost:3000');
+            socket.on('dv', function(data) {
+                $('h1').text('Live Group:online');
+                socket.emit('dvjoin');
+            });
+
+            socket.on('newMember',function(data){
+                updateGroup(data.gId,data.e);
+                console.log('check!');
+            });
+
+            socket.on('makeGroup', function(group){
+                makeGroup(group);
+            });
+
+            socket.on('deleteGroup', function(groupId){
+                deleteGroup(groupId);
+            });
+
+            function makeGroup(group) {
+                var $board = $('#board');
+                $('<div></div>').attr('id',group.id+'tag').text(group.id).appendTo($board);
+                $('<div class="group"></div>').attr('id',group.id).appendTo($board);
+                for (var m in group.entry){
+                    $('<div class="agent"></div>').appendTo($('#'+group.id));
+                }
+            }
+            
+            function updateGroup(gId,e) {
+                $('<div class="agent"></div>').appendTo($('#'+gId));
+            }
+
+            function deleteGroup(gId) {
+                $('#'+gId+'tag').text(gId+' complete');
+            }
+        </script>
+    </body>
+</html>  
